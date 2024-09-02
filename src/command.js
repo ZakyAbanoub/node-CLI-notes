@@ -1,6 +1,13 @@
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { findNotes, getAllNotes, newNote, removeAllNotes, removeNote } from "./notes.js";
+import {
+  findNotes,
+  getAllNotes,
+  newNote,
+  removeAllNotes,
+  removeNote,
+} from "./notes.js";
+import { start } from "./server.js";
 
 const listNotes = (notes) => {
   notes.forEach((note) => {
@@ -80,7 +87,10 @@ yargs(hideBin(process.argv))
         type: "number",
       });
     },
-    async (argv) => {}
+    async (argv) => {
+      const notes = await getAllNotes();
+      start(notes, argv.port);
+    }
   )
   .command(
     "clean",
@@ -88,7 +98,7 @@ yargs(hideBin(process.argv))
     () => {},
     async (argv) => {
       await removeAllNotes();
-      console.log("Database has been resetted successfully!")
+      console.log("Database has been resetted successfully!");
     }
   )
   .demandCommand(1)
